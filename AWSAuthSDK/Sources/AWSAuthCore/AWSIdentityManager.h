@@ -55,6 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (instancetype)defaultIdentityManager;
 
+- (instancetype)initWithCredentialsProvider:(AWSCognitoCredentialsProvider *)credentialProvider;
 
 @end
 

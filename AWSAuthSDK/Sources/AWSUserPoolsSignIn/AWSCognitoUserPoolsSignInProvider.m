@@ -50,9 +50,7 @@ cognitoIdentityUserPoolAppClientSecret:(NSString *)cognitoIdentityUserPoolAppCli
 }
 
 + (instancetype)sharedInstance {
-    
-    if (![AWSCognitoIdentityUserPool defaultCognitoIdentityUserPool]
-        && ![AWSCognitoIdentityUserPool CognitoIdentityUserPoolForKey:AWSCognitoUserPoolsSignInProviderKey]) {
+    if (![AWSCognitoIdentityUserPool CognitoIdentityUserPoolForKey:AWSCognitoUserPoolsSignInProviderKey] && ![AWSCognitoIdentityUserPool defaultCognitoIdentityUserPool]) {
         @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                        reason:@"User Pool not registered. The User Pool configuration has to be set in the `awsconfiguration.json` / `info.plist` or using the method  `setupUserPoolWithId:cognitoIdentityUserPoolAppClientId:cognitoIdentityUserPoolAppClientSecret:region` before accessing the shared instance."
                                      userInfo:nil];
@@ -62,10 +60,10 @@ cognitoIdentityUserPoolAppClientSecret:(NSString *)cognitoIdentityUserPoolAppCli
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _sharedInstance = [[AWSCognitoUserPoolsSignInProvider alloc] init];
-        if ([AWSCognitoIdentityUserPool defaultCognitoIdentityUserPool]) {
-            _sharedInstance.currentUserPool = [AWSCognitoIdentityUserPool defaultCognitoIdentityUserPool];
-        } else {
+        if ([AWSCognitoIdentityUserPool CognitoIdentityUserPoolForKey:AWSCognitoUserPoolsSignInProviderKey]) {
             _sharedInstance.currentUserPool = [AWSCognitoIdentityUserPool CognitoIdentityUserPoolForKey:AWSCognitoUserPoolsSignInProviderKey];
+        } else {
+            _sharedInstance.currentUserPool = [AWSCognitoIdentityUserPool defaultCognitoIdentityUserPool];
         }
     });
     

@@ -35,10 +35,11 @@
 static NSString *const AWSInfoIdentityManager = @"IdentityManager";
 static NSString *const AWSInfoRoot = @"AWS";
 
+static AWSIdentityManager *_defaultIdentityManager = nil;
+static dispatch_once_t defaultIdentityManagerOnceToken;
+
 + (instancetype)defaultIdentityManager {
-    static AWSIdentityManager *_defaultIdentityManager = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
+    dispatch_once(&defaultIdentityManagerOnceToken, ^{
         AWSServiceInfo *serviceInfo = [[AWSInfo defaultAWSInfo] defaultServiceInfo:AWSInfoIdentityManager];
         if (!serviceInfo) {
             @throw [NSException exceptionWithName:NSInternalInconsistencyException
@@ -56,6 +57,19 @@ static NSString *const AWSInfoRoot = @"AWS";
         
         self.credentialsProvider = serviceInfo.cognitoCredentialsProvider;
         [self.credentialsProvider setIdentityProviderManagerOnce:self];
+    }
+    return self;
+}
+
+- (instancetype)initWithCredentialsProvider:(AWSCognitoCredentialsProvider *)credentialProvider {
+    if (self = [super init]) {
+        
+        self.credentialsProvider = credentialProvider;
+        [self.credentialsProvider setIdentityProviderManagerOnce:self];
+        
+        dispatch_once(&defaultIdentityManagerOnceToken, ^{
+            _defaultIdentityManager = self;
+        });
     }
     return self;
 }

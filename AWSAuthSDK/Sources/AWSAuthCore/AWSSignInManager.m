@@ -41,15 +41,25 @@ typedef void (^AWSSignInManagerCompletionBlock)(id result, NSError *error);
 @implementation AWSSignInManager
 
 static NSMutableDictionary<NSString *, id<AWSSignInProvider>> *signInProviderInfo = nil;
-static AWSIdentityManager *identityManager;
+static AWSIdentityManager *identityManager = nil;
+static AWSSignInManager *_sharedSignInManager = nil;
+static dispatch_once_t sharedSignInManagerOnceToken;
+
+- (instancetype)initWithIdentityManager:(AWSIdentityManager *)anIdentityManager {
+    if (self = [super init]) {
+        self.shouldFederate = YES;
+        signInProviderInfo = [[NSMutableDictionary alloc] init];
+        dispatch_once(&sharedSignInManagerOnceToken, ^{
+            _sharedSignInManager = self;
+            identityManager = anIdentityManager;
+        });
+    }
+    return self;
+}
 
 +(instancetype)sharedInstance {
-    static AWSSignInManager *_sharedSignInManager = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
+    dispatch_once(&sharedSignInManagerOnceToken, ^{
         _sharedSignInManager = [[AWSSignInManager alloc] init];
-        _sharedSignInManager.shouldFederate = YES;
-        signInProviderInfo = [[NSMutableDictionary alloc] init];
         identityManager = [AWSIdentityManager defaultIdentityManager];
     });
     
@@ -57,13 +67,13 @@ static AWSIdentityManager *identityManager;
 }
 
 -(void)setDontFederate {
-    AWSSignInManager.sharedInstance.shouldFederate = NO;
+    self.shouldFederate = NO;
 }
     
 -(void)reSignInWithUsername:(NSString *)username
                    password:(NSString *)password {
-    AWSSignInManager.sharedInstance.pendingUsername = username;
-    AWSSignInManager.sharedInstance.pendingPassword = password;
+    self.pendingUsername = username;
+    self.pendingPassword = password;
 }
 
 -(void)registerAWSSignInProvider:(id<AWSSignInProvider>)signInProvider {

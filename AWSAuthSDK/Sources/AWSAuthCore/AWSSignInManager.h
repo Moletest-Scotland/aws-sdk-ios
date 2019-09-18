@@ -55,6 +55,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 +(instancetype)sharedInstance;
 
+- (instancetype)initWithIdentityManager:(AWSIdentityManager *)anIdentityManager;
+
 /**
  Registers the shared instance of sign in provider implementing `AWSSignInProvider`.
  
