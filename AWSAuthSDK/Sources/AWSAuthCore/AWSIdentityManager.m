@@ -46,9 +46,11 @@ static dispatch_once_t defaultIdentityManagerOnceToken;
                                            reason:@"The service configuration is `nil`. You need to configure `awsconfiguration.json` or `Info.plist` before using this method."
                                          userInfo:nil];
         }
-        _defaultIdentityManager = [[AWSIdentityManager alloc] initWithCredentialProvider:serviceInfo];
     });
-    
+    if (!_defaultIdentityManager) {
+        AWSServiceInfo *serviceInfo = [[AWSInfo defaultAWSInfo] defaultServiceInfo:AWSInfoIdentityManager];
+       _defaultIdentityManager = [[AWSIdentityManager alloc] initWithCredentialProvider:serviceInfo];
+    }     
     return _defaultIdentityManager;
 }
 
@@ -65,11 +67,9 @@ static dispatch_once_t defaultIdentityManagerOnceToken;
     if (self = [super init]) {
         
         self.credentialsProvider = credentialProvider;
-        [self.credentialsProvider setIdentityProviderManagerOnce:self];
+        [self.credentialsProvider setIdentityProviderManager:self];
         
-        dispatch_once(&defaultIdentityManagerOnceToken, ^{
-            _defaultIdentityManager = self;
-        });
+        _defaultIdentityManager = self;
     }
     return self;
 }

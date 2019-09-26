@@ -728,6 +728,11 @@ static NSString *const AWSCredentialsProviderKeychainIdentityId = @"identityId";
     });
 }
 
+- (void)setIdentityProviderManager:(id<AWSIdentityProviderManager>)identityProviderManager {
+    AWSCognitoCredentialsProviderHelper *cognitoIdentityProvider = self.identityProvider;
+    cognitoIdentityProvider.identityProviderManager = identityProviderManager;
+}
+
 - (void)setIdentityProvider:(id<AWSCognitoCredentialsProviderHelper>)identityProvider {
     _identityProvider = identityProvider;
     [self clearCredentials];

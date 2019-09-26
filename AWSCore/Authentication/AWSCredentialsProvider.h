@@ -21,11 +21,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 FOUNDATION_EXPORT NSString *const AWSCognitoCredentialsProviderErrorDomain;
 typedef NS_ENUM(NSInteger, AWSCognitoCredentialsProviderErrorType) {
-    AWSCognitoCredentialsProviderErrorUnknown,
-    AWSCognitoCredentialsProviderIdentityIdIsNil,
-    AWSCognitoCredentialsProviderInvalidConfiguration,
-    AWSCognitoCredentialsProviderInvalidCognitoIdentityToken,
-    AWSCognitoCredentialsProviderCredentialsRefreshTimeout,
+  AWSCognitoCredentialsProviderErrorUnknown,
+  AWSCognitoCredentialsProviderIdentityIdIsNil,
+  AWSCognitoCredentialsProviderInvalidConfiguration,
+  AWSCognitoCredentialsProviderInvalidCognitoIdentityToken,
+  AWSCognitoCredentialsProviderCredentialsRefreshTimeout,
 };
 
 @class AWSTask<__covariant ResultType>;
@@ -39,22 +39,22 @@ typedef NS_ENUM(NSInteger, AWSCognitoCredentialsProviderErrorType) {
 /**
  Access Key component of credentials.
  */
-@property (nonatomic, strong, readonly) NSString *accessKey;
+@property(nonatomic, strong, readonly) NSString *accessKey;
 
 /**
  Secret Access Key component of credentials.
  */
-@property (nonatomic, strong, readonly) NSString *secretKey;
+@property(nonatomic, strong, readonly) NSString *secretKey;
 
 /**
  Session Token component of credentials.
  */
-@property (nonatomic, strong, readonly, nullable) NSString *sessionKey;
+@property(nonatomic, strong, readonly, nullable) NSString *sessionKey;
 
 /**
  Date at which these credentials will expire.
  */
-@property (nonatomic, strong, readonly, nullable) NSDate *expiration;
+@property(nonatomic, strong, readonly, nullable) NSDate *expiration;
 
 /**
  Initiates an AWS credentials object.
@@ -116,7 +116,7 @@ typedef NS_ENUM(NSInteger, AWSCognitoCredentialsProviderErrorType) {
  We strongly discourage embedding AWS credentials in your production apps because they can be easily extracted and abused. Consider using `AWSCognitoCredentialsProvider`.
  Simple session credentials with keys and session token.
  */
-@interface AWSBasicSessionCredentialsProvider: NSObject <AWSCredentialsProvider>
+@interface AWSBasicSessionCredentialsProvider : NSObject <AWSCredentialsProvider>
 
 /**
  Instantiates a static credentials provider.
@@ -141,10 +141,10 @@ typedef NS_ENUM(NSInteger, AWSCognitoCredentialsProviderErrorType) {
  */
 @interface AWSWebIdentityCredentialsProvider : NSObject <AWSCredentialsProvider>
 
-@property (nonatomic, strong) NSString *webIdentityToken;
-@property (nonatomic, strong) NSString *roleArn;
-@property (nonatomic, strong) NSString *roleSessionName;
-@property (nonatomic, strong) NSString *providerId;
+@property(nonatomic, strong) NSString *webIdentityToken;
+@property(nonatomic, strong) NSString *roleArn;
+@property(nonatomic, strong) NSString *roleSessionName;
+@property(nonatomic, strong) NSString *providerId;
 
 - (instancetype)initWithRegionType:(AWSRegionType)regionType
                         providerId:(nullable NSString *)providerId
@@ -171,17 +171,17 @@ typedef NS_ENUM(NSInteger, AWSCognitoCredentialsProviderErrorType) {
 /**
  The identityProvider which is responsible for establishing the identity id and (optionally) the open id token for use in the Amazon Cognito authflow.
  */
-@property (nonatomic, strong, readonly) id<AWSCognitoCredentialsProviderHelper> identityProvider;
+@property(nonatomic, strong, readonly) id<AWSCognitoCredentialsProviderHelper> identityProvider;
 
 /**
  The identity id associated with this provider. This value will be fetched from the keychain at startup. If you do not want to reuse the existing identity id, you must call the clearKeychain method.
  */
-@property (nonatomic, strong, readonly, nullable) NSString *identityId;
+@property(nonatomic, strong, readonly, nullable) NSString *identityId;
 
 /**
  The identity pool id associated with this provider. Also used to create a namedspaced keychain area to store identity id and credentials.
  */
-@property (nonatomic, strong, readonly) NSString *identityPoolId;
+@property(nonatomic, strong, readonly) NSString *identityPoolId;
 
 /**
  Initializer for credentials provider with enhanced authentication flow. This is the recommended constructor for first time Amazon Cognito developers. Will create an instance of `AWSEnhancedCognitoIdentityProvider`.
@@ -258,6 +258,7 @@ typedef NS_ENUM(NSInteger, AWSCognitoCredentialsProviderErrorType) {
 - (void)clearCredentials;
 
 - (void)setIdentityProviderManagerOnce:(id<AWSIdentityProviderManager>)identityProviderManager;
+- (void)setIdentityProviderManager:(id<AWSIdentityProviderManager>)identityProviderManager;
 
 @end
 
