@@ -43,25 +43,25 @@ typedef void (^AWSSignInManagerCompletionBlock)(id result, NSError *error);
 static NSMutableDictionary<NSString *, id<AWSSignInProvider>> *signInProviderInfo = nil;
 static AWSIdentityManager *identityManager = nil;
 static AWSSignInManager *_sharedSignInManager = nil;
-static dispatch_once_t sharedSignInManagerOnceToken;
 
 - (instancetype)initWithIdentityManager:(AWSIdentityManager *)anIdentityManager {
     if (self = [super init]) {
         self.shouldFederate = YES;
         signInProviderInfo = [[NSMutableDictionary alloc] init];
-        dispatch_once(&sharedSignInManagerOnceToken, ^{
-            _sharedSignInManager = self;
-            identityManager = anIdentityManager;
-        });
+        _sharedSignInManager = self;
+        identityManager = anIdentityManager;
     }
     return self;
 }
 
 +(instancetype)sharedInstance {
-    dispatch_once(&sharedSignInManagerOnceToken, ^{
+    if (!_sharedSignInManager) {
         _sharedSignInManager = [[AWSSignInManager alloc] init];
+    }
+
+    if (!identityManager) {
         identityManager = [AWSIdentityManager defaultIdentityManager];
-    });
+    }
     
     return _sharedSignInManager;
 }
